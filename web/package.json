@@ -1,0 +1,19 @@
+{
+  "name": "fiscal-calendar-web",
+  "version": "1.0.0",
+  "description": "Web build for the Fiscal Calendar Ignition module",
+  "main": "dist/index.js",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "lerna run build",
+    "clean": "lerna clean",
+    "check": "lerna check"
+  },
+    "devDependencies" : {
+        "lerna": "3.22.1"
+    }
+}

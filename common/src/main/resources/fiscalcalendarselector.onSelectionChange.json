@@ -1,0 +1,15 @@
+{
+    "type": "object",
+    "properties": {
+        "start": {
+            "description": "Start of the selected range, epoch millis. Null when the selection is cleared."
+        },
+        "end": {
+            "description": "End of the selected range (exclusive), epoch millis. Null when the selection is cleared."
+        },
+        "name": {
+            "type": "string",
+            "description": "Name of the selected range, e.g. W5-P2-2024."
+        }
+    }
+}

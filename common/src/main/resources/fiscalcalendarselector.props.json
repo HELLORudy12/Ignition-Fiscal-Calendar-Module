@@ -1,0 +1,105 @@
+{
+    "type": "object",
+    "properties": {
+        "periodCalendar": {
+            "description": "Fiscal calendar dataset, one row per fiscal week. Required columns: FYWeek, wStart, wEnd, FyYear, Period, pStart, pEnd. Bind this to your calendar tag.",
+            "default": []
+        },
+        "start": {
+            "description": "Initial range start. Used to auto-expand and auto-check items.",
+            "default": null
+        },
+        "end": {
+            "description": "Initial range end (exclusive). Used to auto-expand and auto-check items.",
+            "default": null
+        },
+        "multi": {
+            "type": "boolean",
+            "description": "Allow extending the selection to a contiguous range of adjacent items.",
+            "default": false
+        },
+        "yearToggled": {
+            "type": "boolean",
+            "description": "Make fiscal years selectable (named e.g. FY2025). Off by default; years are headers only.",
+            "default": false
+        },
+        "weekToggled": {
+            "type": "boolean",
+            "description": "Show weeks under each period.",
+            "default": true
+        },
+        "dayToggled": {
+            "type": "boolean",
+            "description": "Show days under each week. Only applies when weekToggled is true.",
+            "default": false
+        },
+        "selectedStart": {
+            "description": "Output: start of the selected range. Written by the component.",
+            "default": null
+        },
+        "selectedEnd": {
+            "description": "Output: end of the selected range (exclusive). Written by the component.",
+            "default": null
+        },
+        "selectedName": {
+            "type": "string",
+            "description": "Output: name of the selected range, e.g. W5-P2-2024. Multi-item ranges are joined with '|'.",
+            "default": ""
+        },
+        "selectedKeys": {
+            "type": "array",
+            "description": "Output: keys of the selected nodes in order, e.g. Y2024/P2/W5.",
+            "default": []
+        },
+        "label": {
+            "type": "string",
+            "description": "Text shown in the dropdown box. Leave empty to show the selected name, or the placeholder when nothing is selected.",
+            "default": ""
+        },
+        "placeholder": {
+            "type": "object",
+            "description": "Shown in the dropdown box when nothing is selected and label is empty.",
+            "properties": {
+                "text": {
+                    "type": "string",
+                    "description": "Placeholder text.",
+                    "default": "Select..."
+                },
+                "color": {
+                    "type": "string",
+                    "format": "color",
+                    "description": "Placeholder text color. Leave empty for the default grey.",
+                    "default": ""
+                }
+            },
+            "default": {
+                "text": "Select...",
+                "color": ""
+            }
+        },
+        "showClearIcon": {
+            "type": "boolean",
+            "description": "Show an X in the dropdown box that clears the selection.",
+            "default": false
+        },
+        "enabled": {
+            "type": "boolean",
+            "description": "When false, the dropdown can't be opened or cleared.",
+            "default": true
+        },
+        "style": {
+            "$ref": "urn:ignition-schema:schemas/style-properties.schema.json",
+            "description": "Style of the dropdown box.",
+            "default": {
+                "classes": ""
+            }
+        },
+        "dropdownStyle": {
+            "$ref": "urn:ignition-schema:schemas/style-properties.schema.json",
+            "description": "Style of the popup panel that opens below the box.",
+            "default": {
+                "classes": ""
+            }
+        }
+    }
+}

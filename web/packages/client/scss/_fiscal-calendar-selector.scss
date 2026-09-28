@@ -1,0 +1,256 @@
+// Color scheme: #7a7a7a grey for secondary elements, and the Perspective call-to-action blue (IA blue fallback) for
+// selection. The tints are the same two colors at low opacity. Theme variables are used where Perspective has them,
+// so the box and popup follow light/dark themes.
+$fcs-grey: #7a7a7a;
+$fcs-blue: var(--callToAction, #1a73e8);
+$fcs-hover: rgba(122, 122, 122, 0.10);
+$fcs-selected: rgba(26, 115, 232, 0.10);
+$fcs-divider: rgba(122, 122, 122, 0.25);
+$fcs-border: var(--border, rgba(122, 122, 122, 0.45));
+$fcs-surface: var(--neutral-10, #ffffff);
+
+// ---------------------------------------------------------------------------------------------------------------------
+// The dropdown box (the component itself)
+// ---------------------------------------------------------------------------------------------------------------------
+// The outline, radius and background sit on the root element because that's where Perspective applies the style
+// prop, so a border or borderRadius set in the Designer replaces these defaults instead of drawing a second border.
+.fiscal-calendar-selector {
+  display: flex;
+  box-sizing: border-box;
+  border: 1px solid $fcs-border;
+  background: var(--input, $fcs-surface);
+  color: var(--neutral-90, inherit);
+  font-size: 0.875rem;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+
+  &:hover {
+    border-color: $fcs-grey;
+  }
+
+  &:has(> .fcs-box:focus-visible) {
+    border-color: $fcs-blue;
+    box-shadow: 0 0 0 3px $fcs-selected;
+  }
+
+  .fcs-box {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+    min-width: 0;
+    padding: 0 8px 0 10px;
+    cursor: pointer;
+    user-select: none;
+    outline: none;
+  }
+
+  .fcs-box-text {
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &.fcs-placeholder {
+      color: $fcs-grey;
+    }
+  }
+
+  .fcs-clear,
+  .fcs-box-chevron {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 20px;
+    height: 20px;
+    border-radius: 4px;
+    color: $fcs-grey;
+  }
+
+  .fcs-clear:hover {
+    background: $fcs-hover;
+  }
+
+  // The chevron points down when closed and up when open.
+  .fcs-box-chevron svg {
+    transform: rotate(90deg);
+    transition: transform 150ms ease;
+  }
+
+  &.fcs-box-open {
+    border-color: $fcs-blue;
+
+    .fcs-box-chevron svg {
+      transform: rotate(-90deg);
+    }
+  }
+
+  &.fcs-disabled {
+    opacity: 0.5;
+
+    &:hover {
+      border-color: $fcs-border;
+    }
+
+    .fcs-box {
+      cursor: default;
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+// The popup panel (rendered into document.body) and the fiscal tree inside it
+// ---------------------------------------------------------------------------------------------------------------------
+.fcs-popup {
+  z-index: 10000;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  padding: 6px;
+  border: 1px solid $fcs-border;
+  background: $fcs-surface;
+  color: var(--neutral-90, #2b2b2b);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14), 0 2px 6px rgba(0, 0, 0, 0.08);
+  font-size: 0.875rem;
+  line-height: 1.2;
+  animation: fcs-popup-in 120ms ease-out;
+
+  .fcs-message {
+    padding: 8px;
+    color: $fcs-grey;
+
+    &.fcs-error {
+      color: var(--error, #b00020);
+    }
+  }
+
+  // Thin divider between fiscal years.
+  > .fcs-year + .fcs-year {
+    border-top: 1px solid $fcs-divider;
+    margin-top: 6px;
+    padding-top: 6px;
+  }
+
+  // One row per item: [chevron] [checkbox] [label] ... [dates]. No borders; a soft background on hover/selection.
+  .fcs-row {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    min-height: 30px;
+    padding: 0 8px 0 4px;
+    border-radius: 6px;
+    transition: background-color 120ms ease;
+
+    &:hover {
+      background: $fcs-hover;
+    }
+
+    &.fcs-checked {
+      background: $fcs-selected;
+    }
+  }
+
+  .fcs-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 20px;
+    height: 20px;
+    border-radius: 4px;
+    color: $fcs-grey;
+    cursor: pointer;
+
+    svg {
+      transition: transform 150ms ease;
+    }
+
+    &.fcs-open svg {
+      transform: rotate(90deg);
+    }
+  }
+
+  // Checkbox, label and dates together form the clickable area.
+  .fcs-select {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+    height: 30px;
+    cursor: pointer;
+    user-select: none;
+    outline: none;
+
+    &:focus-visible .fcs-checkbox {
+      box-shadow: 0 0 0 3px $fcs-selected;
+    }
+  }
+
+  // Custom checkbox: grey outline, blue fill with a white check when selected.
+  .fcs-checkbox {
+    position: relative;
+    flex: 0 0 auto;
+    width: 16px;
+    height: 16px;
+    box-sizing: border-box;
+    border: 1.5px solid $fcs-grey;
+    border-radius: 4px;
+    transition: background-color 120ms ease, border-color 120ms ease;
+  }
+
+  .fcs-row.fcs-checked .fcs-checkbox {
+    background: $fcs-blue;
+    border-color: $fcs-blue;
+
+    &::after {
+      content: "";
+      position: absolute;
+      left: 4.5px;
+      top: 1px;
+      width: 4px;
+      height: 8px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+  }
+
+  .fcs-label {
+    flex: 0 0 auto;
+    font-weight: 500;
+  }
+
+  .fcs-dates {
+    flex: 1;
+    min-width: 0;
+    text-align: right;
+    color: $fcs-grey;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  // Years read as section headers.
+  .fcs-year > .fcs-row .fcs-label {
+    font-weight: 600;
+    font-size: 0.9375rem;
+  }
+
+  // Children: indentation only.
+  .fcs-children {
+    padding-left: 20px;
+  }
+}
+
+@keyframes fcs-popup-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
